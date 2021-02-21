@@ -1,12 +1,17 @@
 package com.example.demo.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * La entidades siempre deberian implementar {@link Serializable}
@@ -42,7 +47,17 @@ public class User implements Serializable {
 
     @ApiModelProperty(example = "1", value = "Id del Proyecto creado")
     @ManyToOne
+    @JsonIgnoreProperties(value = "users", allowSetters = true)
     private Project project;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "user_authority",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
+    @BatchSize(size = 20)
+    private Set<Authority> authorities = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -104,6 +119,15 @@ public class User implements Serializable {
 
     public User setProject(Project project) {
         this.project = project;
+        return this;
+    }
+
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public User setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
         return this;
     }
     @Override

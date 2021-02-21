@@ -5,12 +5,21 @@ spring:
     # maceodb es la base de datos
    url: jdbc:mysql://localhost:3306/maceodb?useUnicode=true&allowPublicKeyRetrieval=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC
    username: root
-   password: root # puedes dejarlo en blacno
+   password: # puedes dejarlo en blanco
+   hikari:
+     auto-commit: false
   jpa:
     database: mysql
     show-sql: true # para que te muestre las consultas en la petaña donde se esta compilando abajo en el IDE
     database-platform: org.hibernate.dialect.MySQL8Dialect # si usas la version de mysql 5.x.x comentarea esta linea
     hibernate:
       ddl-auto: update # esto es para cada ve que hagas un cambio en las entidades se refleje en la base de datos
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+      hibernate.jdbc.time_zone: UTC
 server:
   port: 8080 #si quieres puedes cambiarlo

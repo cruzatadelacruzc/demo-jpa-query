@@ -1,11 +1,12 @@
 package com.example.demo.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -31,8 +32,8 @@ public class Project implements Serializable {
     @ApiModelProperty(example = "CEGEL")
     private String centro;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties(value = "project", allowSetters = true)
     private Set<User> users = new HashSet<>();
 
     public Long getId() {
@@ -69,6 +70,16 @@ public class Project implements Serializable {
     public Project setUsers(Set<User> users) {
         this.users = users;
         return this;
+    }
+
+    public void addUser(User user) {
+        this.users.add(user);
+        user.setProject(this);
+    }
+
+    public void removeUser(User user) {
+        this.users.remove(user);
+        user.setProject(null);
     }
 
     @Override

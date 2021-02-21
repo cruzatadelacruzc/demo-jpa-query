@@ -1,6 +1,7 @@
 package com.example.demo.web.rest;
 
 import com.example.demo.domain.Project;
+import com.example.demo.domain.User;
 import com.example.demo.repository.ProjectRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
@@ -9,16 +10,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Api(tags = {"Recurso Proyecto"})
 @RestController
+@RequestMapping("/api")
 public class ProjectResource {
     private static final Logger logger = LoggerFactory.getLogger(ProjectResource.class);
 
@@ -39,7 +44,7 @@ public class ProjectResource {
     @ApiOperation(value = "Crear un proyecto")
     public ResponseEntity<Project> creatproject(@Valid @RequestBody Project project) throws URISyntaxException {
         logger.info("Creando el proyecto {}", project);
-        projectRepository.saveAndFlush(project);
+        projectRepository.save(project);
         return ResponseEntity.created(new URI("/findproject/" + project.getNombre())).body(project);
     }
 
@@ -52,7 +57,7 @@ public class ProjectResource {
     @ApiOperation(value = "Obtener proyecto dado centro")
     public ResponseEntity<Project> findProject(@PathVariable String centro) {
         logger.info("Mostrando Proyecto dado el centro: {}", centro);
-        Optional<Project> result = projectRepository.findOneByCentro(centro);
+        Optional<Project> result = projectRepository.findProjectWithUsersByCentro(centro);
         return result.map(ResponseEntity::ok).orElse(new ResponseEntity(
                 "Proyecto en el centro " + centro + " no encontrado"
                 , HttpStatus.NOT_FOUND));
@@ -88,5 +93,17 @@ public class ProjectResource {
     public ResponseEntity<List<Project>> findProjectByCentros(@RequestBody List<String> centros) {
         logger.info("Buscando proyectos dado este listado de centro: {}", centros);
         return ResponseEntity.ok(projectRepository.findAllByCentros(centros));
+    }
+
+    @Transactional
+    @DeleteMapping("/projects/{id}")
+    @ApiOperation(value = "Eliminar un Proyecto")
+    public ResponseEntity<Void> deleteProjectById(@PathVariable Long id) {
+        logger.info("Eliminando Proyecto dado el Id: {}", id);
+        projectRepository.findProjectWithUsersById(id).ifPresent(project -> {
+            new HashSet<>(project.getUsers()).forEach(project::removeUser);
+            projectRepository.delete(project);
+        });
+        return ResponseEntity.noContent().build();
     }
 }

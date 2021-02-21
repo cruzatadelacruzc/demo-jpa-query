@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.domain.User;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -40,5 +41,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User u set u.activo = :status where u.nombres = :name")
     int updateUserSetStatusForName(@Param("status") boolean status, @Param("name") String name);
+
+
+    @EntityGraph(attributePaths = {"project", "authorities"})
+    Optional<User> findOneWithProjectById(Long id);
+
+    @EntityGraph(attributePaths = "authorities")
+    Optional<User> findOneWithAuthoritiesByNombresIgnoreCase(String nombre);
 
 }
