@@ -21,5 +21,7 @@ spring:
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: false
       hibernate.jdbc.time_zone: UTC
+  messages:
+    basename: i18n/messages
 server:
   port: 8080 #si quieres puedes cambiarlo
