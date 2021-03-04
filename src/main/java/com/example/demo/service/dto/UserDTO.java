@@ -1,11 +1,16 @@
 package com.example.demo.service.dto;
 
+import com.example.demo.domain.User;
+import com.example.demo.service.UniqueValue;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-
+/**
+ * A DTO for the {@link com.example.demo.domain.User} entity.
+ */
+@UniqueValue(entityClass = User.class, columnNames = {"nombres","apellidos"})
 public class UserDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;

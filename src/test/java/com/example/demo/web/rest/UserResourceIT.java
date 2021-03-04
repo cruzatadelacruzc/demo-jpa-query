@@ -103,6 +103,30 @@ public class UserResourceIT {
 
     @Test
     @Transactional
+    void createUserUniqueValueConstraintViolated() throws Exception {
+        //Initialize database
+        User user2 = new User()
+                .setEdad(DEFAULT_EDAD)
+                .setSexo(UPDATED_SEXO)
+                .setActivo(UPDATED_ACTIVO)
+                .setNombres(DEFAULT_NOMBRES)
+                .setApellidos(DEFAULT_APELLIDOS);
+        repository.saveAndFlush(user2);
+        int databaseSizeInitial = repository.findAll().size();
+
+        UserDTO userDTO = userMapper.toDTO(this.user);
+        this.mvc.perform(post("/api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createObjectMapper().writeValueAsBytes(userDTO)))
+                .andExpect(status().isBadRequest());
+
+        // Validate the Poor in the database
+        List<User> all = repository.findAll();
+        assertThat(all).hasSize(databaseSizeInitial);
+    }
+
+    @Test
+    @Transactional
     void createUserWithIdNotNull() throws Exception {
         int databaseSizeInitial = repository.findAll().size();
 
