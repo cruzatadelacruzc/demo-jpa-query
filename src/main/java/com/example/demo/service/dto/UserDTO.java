@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * A DTO for the {@link com.example.demo.domain.User} entity.
  */
-@UniqueValue(entityClass = User.class, columnNames = {"nombres","apellidos"})
+@UniqueValue(entityClass = User.class, columnNames = {"nombres","apellidos"}, includeFields = "id")
 public class UserDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
