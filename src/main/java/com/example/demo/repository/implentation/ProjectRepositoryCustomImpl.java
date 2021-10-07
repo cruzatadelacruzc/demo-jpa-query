@@ -43,7 +43,7 @@ public class ProjectRepositoryCustomImpl implements ProjectRepositoryCustom {
         Path<String> centroPath = projectRoot.get("centro");
         List<Predicate> predicates = new ArrayList<>();
         centros.forEach(centro -> predicates.add(cb.equal(centroPath, centro)));
-        query.select(projectRoot).where(cb.or(predicates.toArray(new Predicate[predicates.size()])));
+        query.select(projectRoot).where(cb.or(predicates.toArray(new Predicate[0])));
         return entityManager.createQuery(query).getResultList();
     }
 }
