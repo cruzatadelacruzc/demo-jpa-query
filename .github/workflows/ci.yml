@@ -31,7 +31,7 @@ jobs:
     - name: Build & push Docker image to Quay.io
       uses: mr-smithers-excellent/docker-build-push@v5
       with:
-        image: quay.io/gsi_cesar/jpa-query
+        image: gsi_cesar/jpa-query
         tags: latest
         registry: quay.io
         username: ${{ secrets.DOCKER_USERNAME }}

@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>jpa-query</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
+	<name>jpa-query</name>
 	<description>Proyecto demo para jpaRepository usando Query</description>
 
 	<properties>
@@ -76,6 +76,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>jpa-query</finalName>
 	</build>
 
 </project>
